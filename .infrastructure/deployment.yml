@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-deployment
+  namespace: todoapp
+spec:
+  strategy:
+    type: RollingUpdate 
+  replicas: 2
+  selector: 
+    matchLabels:
+      app: todo-deployment
+  template: 
+    metadata:
+      labels:
+        app: todo-deployment
+    spec:
+      containers:
+      - name: todoapp
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "30m"
+          limits:
+            memory: "128Mi"
+            cpu: "60m"
+        image: ikulyk404/todoapp:3.0.0
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: api/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: api/ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5  
