@@ -14,11 +14,6 @@ Apply the deployment manifest:
 kubectl apply -f deployment.yml
 
 
-Apply the service manifest to expose the app:
-
-kubectl apply -f service.yml
-
-
 (Optional) Apply the HPA configuration:
 
 kubectl apply -f hpa.yml
@@ -55,7 +50,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: todoapp-hpa
-  namespace: todoapp
+  namespace: mateapp
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -70,6 +65,12 @@ spec:
       target:
         type: Utilization
         averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 75
 
 Rationale:
 
@@ -102,7 +103,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: todoapp-service
-  namespace: todoapp
+  namespace: mateapp
 spec:
   type: NodePort
   selector:
